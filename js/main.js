@@ -310,6 +310,10 @@ function initScene() {
 	
 	masterContainer.addEventListener( 'click', onClick, true );	
 	masterContainer.addEventListener( 'mousewheel', onMouseWheel, false );
+  
+    document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+    document.addEventListener( 'touchmove', onDocumentTouchMove, false );s
+    document.addEventListener( 'touchend', onDocumentTouchEnd, false );
 	
 	//	firefox	
 	masterContainer.addEventListener( 'DOMMouseScroll', function(e){
