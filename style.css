@@ -54,8 +54,8 @@ body {
   font-family: 'Roboto';
   font-size: 14px;
   height: 768px;
-  min-width: 1280px;
-  min-height: 860px;
+/*  min-width: 1280px;*/
+/*  min-height: 860px;*/
   overflow: hidden;
 }
 
@@ -311,7 +311,7 @@ Bar graph on left
 
 #barGraph {
   position: absolute;
-  /*bottom:10px;*/
+  bottom:10px;
   left: -7px;
   opacity: 0.9;
 }
@@ -701,6 +701,20 @@ Bar graph on left
 
 
 /* Small size */
+@media all and (max-width: 900px) {
+  .zoomBtn {
+    display: none;
+  }
+}
+
+@media all and (max-width: 680px) {
+  .countryTextInput {
+    display: none;
+  }
+  .searchBtn {
+    display: none;
+  }
+}
 
 @media all and (max-width: 1395px) {
   #importExportBtns {

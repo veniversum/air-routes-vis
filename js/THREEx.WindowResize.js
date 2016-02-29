@@ -25,7 +25,7 @@ var THREEx	= THREEx 		|| {};
 */
 THREEx.WindowResize	= function(renderer, camera){
 	var callback	= function(){
-	    var minWidth = 1280;
+	    var minWidth = 400;
 	    var w = window.innerWidth;
 	    if(w < minWidth) {
 	       w = minWidth;

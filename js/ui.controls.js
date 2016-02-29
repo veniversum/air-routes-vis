@@ -113,8 +113,8 @@ var d3Graphs = {
         var windowWidth = $(window).width();
         var windowHeight = $(window).height();
         d3Graphs.positionHistory(windowWidth);
-        var minWidth = 1280;
-        var minHeight = 860;
+        var minWidth = 400;
+        var minHeight = 400;
         var w = windowWidth < minWidth ? minWidth : windowWidth;
         var hudButtonWidth = 489;
         $('#hudButtons').css('left',w - hudButtonWidth-20);        
@@ -125,8 +125,9 @@ var d3Graphs = {
         console.log(windowHeight+ " " + barGraphHeight + " " + barGraphBottomPadding);
         var barGraphTopPos = (windowHeight < minHeight ? minHeight : windowHeight) - barGraphHeight - barGraphBottomPadding;
         console.log(barGraphTopPos);
+        $('.countryTextInput').css('width', windowWidth - 550 > 300 ? 300 : windowWidth - 550);
         
-        $("#barGraph").css('top',barGraphTopPos+'px');
+        //$("#barGraph").css('top',barGraphTopPos+'px');
         /*
         var hudHeaderLeft = $("#hudHeader").css('left');
         hudHeaderLeft = hudHeaderLeft.substr(0,hudHeaderLeft.length-2)

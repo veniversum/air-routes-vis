@@ -1,106 +1,141 @@
-var mouseX = 0, mouseY = 0, pmouseX = 0, pmouseY = 0;
-var pressX = 0, pressY = 0;
+var mouseX = 0,
+  mouseY = 0,
+  pmouseX = 0,
+  pmouseY = 0;
+var pressX = 0,
+  pressY = 0;
 
-var dragging = false;						
+var dragging = false;
 
-var rotateX = 0, rotateY = 0;
-var rotateVX = 0, rotateVY = 0;
-var rotateXMax = 90 * Math.PI/180;	
+var rotateX = 0,
+  rotateY = 0;
+var rotateVX = 0,
+  rotateVY = 0;
+var rotateXMax = 90 * Math.PI / 180;
 
 var rotateTargetX = undefined;
 var rotateTargetY = undefined;
 
-var keyboard = new THREEx.KeyboardState();	
+var keyboard = new THREEx.KeyboardState();
 
-function onDocumentMouseMove( event ) {
+function onDocumentMouseMove(event) {
 
-	pmouseX = mouseX;
-	pmouseY = mouseY;
+  pmouseX = mouseX;
+  pmouseY = mouseY;
 
-	mouseX = event.clientX - window.innerWidth * 0.5;
-	mouseY = event.clientY - window.innerHeight * 0.5;
+  mouseX = event.clientX - window.innerWidth * 0.5;
+  mouseY = event.clientY - window.innerHeight * 0.5;
 
-	if(dragging){
-		if(keyboard.pressed("shift") == false){
-			rotateVY += (mouseX - pmouseX) / 2 * Math.PI / 180 * 0.3;
-  			rotateVX += (mouseY - pmouseY) / 2 * Math.PI / 180 * 0.3;	
-  		}
-  		else{
-  			camera.position.x -= (mouseX - pmouseX) * .5; 
-  			camera.position.y += (mouseY - pmouseY) * .5;
-  		}
-	}
-}
-
-function onDocumentMouseDown( event ) {	
-    if(event.target.className.indexOf('noMapDrag') !== -1) {
-        return;
+  if (dragging) {
+    if (keyboard.pressed("shift") == false) {
+      rotateVY += (mouseX - pmouseX) / 2 * Math.PI / 180 * 0.3;
+      rotateVX += (mouseY - pmouseY) / 2 * Math.PI / 180 * 0.3;
+    } else {
+      camera.position.x -= (mouseX - pmouseX) * .5;
+      camera.position.y += (mouseY - pmouseY) * .5;
     }
-    dragging = true;			   
-    pressX = mouseX;
-    pressY = mouseY;   	
+  }
+}
+
+function onDocumentMouseDown(event) {
+  if (event.target.className.indexOf('noMapDrag') !== -1) {
+    return;
+  }
+  dragging = true;
+  pressX = mouseX;
+  pressY = mouseY;
+  rotateTargetX = undefined;
+  rotateTargetX = undefined;
+}
+
+function onDocumentMouseUp(event) {
+  d3Graphs.zoomBtnMouseup();
+  dragging = false;
+  histogramPressed = false;
+}
+
+function onDocumentTouchStart(event) {
+  if (event.touches.length === 1) {
+    dragging = true;
+    mouseX = event.touches[0].pageX - window.innerWidth * 0.5;
+    mouseY = event.touches[0].pageY - window.innerHeight * 0.5;
+    pmouseX = mouseX;
+    pmouseY = mouseY;
     rotateTargetX = undefined;
     rotateTargetX = undefined;
-}	
-
-function onDocumentMouseUp( event ){
-	d3Graphs.zoomBtnMouseup();
-	dragging = false;
-	histogramPressed = false;
+  }
 }
 
-function onClick( event ){
-	//	make the rest not work if the event was actually a drag style click
-	if( Math.abs(pressX - mouseX) > 3 || Math.abs(pressY - mouseY) > 3 )
-		return;				
+function onDocumentTouchMove(event) {
+  if (event.touches.length === 1) {
+    event.preventDefault();
+    pmouseX = mouseX;
+    pmouseY = mouseY;
 
-	var pickColorIndex = getPickColor();	
-	//	find it
-	for( var i in countryColorMap ){
-		var countryCode = i;
-		var countryColorIndex = countryColorMap[i];
-		if( pickColorIndex == countryColorIndex ){
-			// console.log("selecting code " + countryCode);
-			var countryName = countryLookup[countryCode];
-			// console.log("converts to " + countryName);
-			if( countryName === undefined )
-				return;			
-			if( $.inArray(countryName, selectableCountries) <= -1 )
-				return;
-			// console.log(countryName);
-			var selection = selectionData;
-			selection.selectedCountry = countryName;
-			selectVisualization( timeBins, selection.selectedYear, [selection.selectedCountry], selection.getExportCategories(), selection.getImportCategories() );	
-			// console.log('selecting ' + countryName + ' from click');
-			return;
-		}
-	}	
+    mouseX = event.touches[0].pageX - window.innerWidth * 0.5;
+    mouseY = event.touches[0].pageY - window.innerHeight * 0.5;
+
+    rotateVY += (mouseX - pmouseX) / 2 * Math.PI / 180 * 0.3;
+    rotateVX += (mouseY - pmouseY) / 2 * Math.PI / 180 * 0.3;
+    rotateTargetX = undefined;
+    rotateTargetX = undefined;
+  }
 }
 
-function onKeyDown( event ){	
+function onDocumentTouchEnd(event) {
+    dragging = false;
 }
 
-function handleMWheel( delta ) {
-	camera.scale.z += delta * 0.1;
-	camera.scale.z = constrain( camera.scale.z, 0.7, 5.0 );
+function onClick(event) {
+  //	make the rest not work if the event was actually a drag style click
+  if (Math.abs(pressX - mouseX) > 3 || Math.abs(pressY - mouseY) > 3)
+    return;
+
+  var pickColorIndex = getPickColor();
+  //	find it
+  for (var i in countryColorMap) {
+    var countryCode = i;
+    var countryColorIndex = countryColorMap[i];
+    if (pickColorIndex == countryColorIndex) {
+      // console.log("selecting code " + countryCode);
+      var countryName = countryLookup[countryCode];
+      // console.log("converts to " + countryName);
+      if (countryName === undefined)
+        return;
+      if ($.inArray(countryName, selectableCountries) <= -1)
+        return;
+      // console.log(countryName);
+      var selection = selectionData;
+      selection.selectedCountry = countryName;
+      selectVisualization(timeBins, selection.selectedYear, [selection.selectedCountry], selection.getExportCategories(), selection.getImportCategories());
+      // console.log('selecting ' + countryName + ' from click');
+      return;
+    }
+  }
 }
 
-function onMouseWheel( event ){
-	var delta = 0;
+function onKeyDown(event) {}
 
-	if (event.wheelDelta) { /* IE/Opera. */
-	        delta = event.wheelDelta/120;
-	} 
-	//	firefox
-	else if( event.detail ){
-		delta = -event.detail/3;
-	}
-
-	if (delta)
-	        handleMWheel(delta);
-
-	event.returnValue = false;			
-}	
-
-function onDocumentResize(e){
+function handleMWheel(delta) {
+  camera.scale.z += delta * 0.1;
+  camera.scale.z = constrain(camera.scale.z, 0.7, 5.0);
 }
+
+function onMouseWheel(event) {
+  var delta = 0;
+
+  if (event.wheelDelta) { /* IE/Opera. */
+    delta = event.wheelDelta / 120;
+  }
+  //	firefox
+  else if (event.detail) {
+    delta = -event.detail / 3;
+  }
+
+  if (delta)
+    handleMWheel(delta);
+
+  event.returnValue = false;
+}
+
+function onDocumentResize(e) {}
